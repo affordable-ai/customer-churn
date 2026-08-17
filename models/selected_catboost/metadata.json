@@ -1,0 +1,52 @@
+{
+  "categorical_features": [
+    "Contract",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "PaymentMethod",
+    "MultipleLines",
+    "PaperlessBilling",
+    "StreamingMovies",
+    "PhoneService",
+    "Dependents"
+  ],
+  "feature_columns": [
+    "tenure",
+    "MonthlyCharges",
+    "TotalCharges",
+    "Contract",
+    "InternetService",
+    "OnlineSecurity",
+    "TechSupport",
+    "PaymentMethod",
+    "MultipleLines",
+    "PaperlessBilling",
+    "StreamingMovies",
+    "PhoneService",
+    "SeniorCitizen",
+    "Dependents",
+    "is_month_to_month",
+    "is_one_year_contract",
+    "is_two_year_contract",
+    "avg_monthly_charge",
+    "charge_per_tenure_month",
+    "total_charge_consistency",
+    "number_of_streaming_services",
+    "has_dependents",
+    "tenure_months"
+  ],
+  "best_hyperparameters": {
+    "iterations": 260,
+    "learning_rate": 0.04,
+    "depth": 5,
+    "l2_leaf_reg": 6.0,
+    "loss_function": "Logloss",
+    "random_seed": 42,
+    "verbose": 50,
+    "random_strength": 1.0,
+    "eval_metric": "PRAUC",
+    "bagging_temperature": 0.5,
+    "allow_writing_files": false
+  }
+}

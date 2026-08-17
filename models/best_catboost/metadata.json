@@ -1,0 +1,53 @@
+{
+  "categorical_features": [
+    "gender",
+    "Partner",
+    "Dependents",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod"
+  ],
+  "feature_columns": [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "tenure",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "best_hyperparameters": {
+    "iterations": 300,
+    "learning_rate": 0.05,
+    "depth": 4,
+    "l2_leaf_reg": 3.0,
+    "loss_function": "Logloss",
+    "random_seed": 42,
+    "verbose": false,
+    "random_strength": 0.5,
+    "eval_metric": "PRAUC",
+    "bagging_temperature": 0.0,
+    "allow_writing_files": false
+  }
+}

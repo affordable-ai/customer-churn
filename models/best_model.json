@@ -1,0 +1,17 @@
+{
+  "feature_set": "raw",
+  "model": "catboost",
+  "threshold": 0.39999999999999997,
+  "validation_threshold": 0.39999999999999997,
+  "validation_roc_auc": 0.8510877643675375,
+  "validation_pr_auc": 0.6760422907994003,
+  "validation_precision": 0.63125,
+  "validation_recall": 0.6755852842809364,
+  "validation_f1": 0.6526655896607432,
+  "test_threshold": 0.39999999999999997,
+  "test_roc_auc": 0.8442907334211681,
+  "test_pr_auc": 0.6670833527954366,
+  "test_precision": 0.5885167464114832,
+  "test_recall": 0.6577540106951871,
+  "test_f1": 0.6212121212121212
+}
