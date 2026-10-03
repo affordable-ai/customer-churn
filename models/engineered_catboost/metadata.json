@@ -14,7 +14,10 @@
     "StreamingMovies",
     "Contract",
     "PaperlessBilling",
-    "PaymentMethod"
+    "PaymentMethod",
+    "contract_internetservice",
+    "contract_payment",
+    "internetservice_payment"
   ],
   "feature_columns": [
     "gender",
@@ -43,30 +46,39 @@
     "avg_monthly_charge",
     "charge_per_tenure_month",
     "total_charge_consistency",
+    "charge_delta",
     "high_monthly_charge",
     "number_of_security_services",
     "number_of_streaming_services",
     "number_of_support_services",
     "number_of_services",
+    "charge_per_service",
     "has_dependents",
     "has_partner_or_dependents",
     "senior_single_customer",
     "is_month_to_month",
     "is_one_year_contract",
     "is_two_year_contract",
-    "digital_engagement_count"
+    "digital_engagement_count",
+    "contract_internetservice",
+    "contract_payment",
+    "internetservice_payment",
+    "has_tech_and_security",
+    "fiber_no_support",
+    "fiber_no_security",
+    "auto_payment"
   ],
   "best_hyperparameters": {
-    "iterations": 180,
-    "learning_rate": 0.05,
+    "iterations": 200,
+    "learning_rate": 0.04,
     "depth": 4,
-    "l2_leaf_reg": 3.0,
+    "l2_leaf_reg": 4.0,
     "loss_function": "Logloss",
     "random_seed": 42,
     "verbose": 50,
     "random_strength": 0.5,
     "eval_metric": "PRAUC",
-    "bagging_temperature": 0.0,
+    "bagging_temperature": 0.2,
     "allow_writing_files": false
   }
 }
