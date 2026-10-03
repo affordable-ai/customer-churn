@@ -8,17 +8,19 @@ class FeatureSelector:
     SELECTED_FEATURES = [
         "tenure", "MonthlyCharges", "TotalCharges", "Contract", "InternetService",
         "OnlineSecurity", "TechSupport", "PaymentMethod", "MultipleLines",
-        "PaperlessBilling", "StreamingMovies", "PhoneService", "SeniorCitizen",
-        "Dependents", "is_month_to_month", "is_one_year_contract",
-        "is_two_year_contract", "avg_monthly_charge", "charge_per_tenure_month",
-        "total_charge_consistency", "number_of_streaming_services", "has_dependents",
-        "tenure_months",
+        "PaperlessBilling", "StreamingMovies", "SeniorCitizen", "Dependents",
+        "is_month_to_month", "is_two_year_contract", "is_new_customer",
+        "avg_monthly_charge", "charge_per_service", "charge_delta",
+        "total_charge_consistency", "number_of_services", "number_of_streaming_services",
+        "contract_internetservice", "contract_payment", "fiber_no_security",
+        "fiber_no_support", "has_tech_and_security", "auto_payment",
     ]
 
     def select(self, frame: pd.DataFrame) -> pd.DataFrame:
         """Return notebook-supported logical features available in a frame."""
         columns = [column for column in self.SELECTED_FEATURES if column in frame.columns]
         return frame.loc[:, columns].copy()
+
 
 
 def permutation_rank(model, X, y, scoring="average_precision", random_state=42) -> pd.DataFrame:

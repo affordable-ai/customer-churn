@@ -1,0 +1,61 @@
+feature,mutual_information
+Contract_Month-to-month,0.09772138476780312
+OnlineSecurity_No,0.0730472081308986
+tenure,0.07079016373757763
+TechSupport_No,0.06537660909769816
+Contract_Two year,0.06357321566074581
+MonthlyCharges,0.05012523916803957
+PaymentMethod_Electronic check,0.04608395257475584
+InternetService_Fiber optic,0.043221147905651236
+TotalCharges,0.041231478969545154
+OnlineBackup_No,0.03912060577572696
+DeviceProtection_No internet service,0.03689693530188176
+StreamingTV_No internet service,0.03438575852169912
+TechSupport_No internet service,0.0336115761727358
+PaperlessBilling_No,0.031926486875492044
+StreamingMovies_No internet service,0.030026615565468262
+DeviceProtection_No,0.02607763370606131
+OnlineBackup_No internet service,0.024765228274352902
+PaperlessBilling_Yes,0.023244878621152987
+Dependents_Yes,0.020642221369191693
+OnlineSecurity_No internet service,0.020482017893283855
+StreamingMovies_No,0.017472673415695583
+SeniorCitizen,0.01645066935189221
+InternetService_No,0.016372073354238736
+TechSupport_Yes,0.01390096793119766
+OnlineSecurity_Yes,0.013240070295419848
+Contract_One year,0.013046024487376018
+Partner_No,0.012746181641742238
+InternetService_DSL,0.012467727091437286
+DeviceProtection_nan,0.012285505196235835
+Partner_Yes,0.012246711260252896
+Dependents_No,0.010881990078033477
+gender_nan,0.009484211948763699
+PaymentMethod_Bank transfer (automatic),0.008698975555835764
+Contract_nan,0.00737143265192719
+PaymentMethod_Credit card (automatic),0.007329201481945491
+StreamingTV_nan,0.0065443766840713735
+PhoneService_nan,0.005674261515131729
+MultipleLines_No,0.005290232379883797
+gender_Female,0.003989525884189771
+MultipleLines_nan,0.0031769611442535872
+InternetService_nan,0.0027810177522933355
+StreamingMovies_nan,0.00259988230083974
+TechSupport_nan,0.0024588849007165514
+StreamingMovies_Yes,0.00235608594672998
+StreamingTV_Yes,0.0014923725615880734
+DeviceProtection_Yes,0.001482556587522943
+MultipleLines_Yes,0.0010666623615895876
+Dependents_nan,0.0
+PhoneService_Yes,0.0
+Partner_nan,0.0
+gender_Male,0.0
+MultipleLines_No phone service,0.0
+OnlineSecurity_nan,0.0
+PhoneService_No,0.0
+OnlineBackup_nan,0.0
+OnlineBackup_Yes,0.0
+StreamingTV_No,0.0
+PaperlessBilling_nan,0.0
+PaymentMethod_Mailed check,0.0
+PaymentMethod_nan,0.0

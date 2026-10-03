@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from catboost import CatBoostClassifier
-from sklearn.metrics import average_precision_score, f1_score, precision_score, recall_score, roc_auc_score, roc_curve
+from sklearn.metrics import accuracy_score, average_precision_score, f1_score, precision_score, recall_score, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
 
@@ -22,7 +22,7 @@ from .data_loader import load_raw_data, split_features_target
 from .data_validation import audit_dataframe, validate_frame
 from .feature_engineering import FeatureEngineer
 from .feature_selection import FeatureSelector
-from .threshold_optimization import threshold_table, select_cost_threshold
+from .threshold_optimization import threshold_table, select_cost_threshold, select_accuracy_threshold
 from .utils import save_json
 
 LOGGER = logging.getLogger(__name__)
@@ -44,10 +44,11 @@ class DatasetSplits:
 class ChurnExperimentPipeline:
     """Run leakage-aware CatBoost feature-set experiments without touching test data."""
 
-    def __init__(self, random_state: int = RANDOM_STATE, artifact_root: Path | None = None) -> None:
+    def __init__(self, random_state: int = RANDOM_STATE, artifact_root: Path | None = None, threshold_strategy: str = "accuracy") -> None:
         self.random_state = random_state
         self.artifact_root = Path(artifact_root or MODEL_DIR).resolve()
         self.output_root = OUTPUT_DIR.resolve()
+        self.threshold_strategy = threshold_strategy
         self.splits: DatasetSplits | None = None
         self.experiment_results: list[dict[str, Any]] = []
 
@@ -114,8 +115,9 @@ class ChurnExperimentPipeline:
     ) -> XGBClassifier:
         """Tune a bounded XGBoost candidate set on the validation split."""
         candidates = [
+            {"n_estimators": 100, "max_depth": 3, "learning_rate": 0.05, "subsample": 0.85, "colsample_bytree": 0.85, "min_child_weight": 2},
+            {"n_estimators": 120, "max_depth": 4, "learning_rate": 0.03, "subsample": 0.90, "colsample_bytree": 0.90, "min_child_weight": 3},
             {"n_estimators": 80, "max_depth": 3, "learning_rate": 0.08, "subsample": 0.85, "colsample_bytree": 0.85, "min_child_weight": 1},
-            {"n_estimators": 120, "max_depth": 4, "learning_rate": 0.06, "subsample": 0.90, "colsample_bytree": 0.90, "min_child_weight": 3},
         ]
         best_model: XGBClassifier | None = None
         best_score = -np.inf
@@ -156,7 +158,8 @@ class ChurnExperimentPipeline:
     ) -> CatBoostClassifier:
         """Tune a bounded, reproducible CatBoost candidate set on development data."""
         candidates = [
-            {"iterations": 180, "depth": 4, "learning_rate": 0.05, "l2_leaf_reg": 3.0, "random_strength": 0.5, "bagging_temperature": 0.0},
+            {"iterations": 200, "depth": 4, "learning_rate": 0.04, "l2_leaf_reg": 4.0, "random_strength": 0.5, "bagging_temperature": 0.2},
+            {"iterations": 280, "depth": 5, "learning_rate": 0.035, "l2_leaf_reg": 5.0, "random_strength": 1.0, "bagging_temperature": 0.5},
             {"iterations": 260, "depth": 5, "learning_rate": 0.04, "l2_leaf_reg": 6.0, "random_strength": 1.0, "bagging_temperature": 0.5},
         ]
         best_model: CatBoostClassifier | None = None
@@ -213,7 +216,15 @@ class ChurnExperimentPipeline:
 
     def _evaluate(self, y: pd.Series, probabilities: np.ndarray, threshold: float = 0.5) -> dict[str, float]:
         predicted = (probabilities >= threshold).astype(int)
-        return {"threshold": threshold, "roc_auc": float(roc_auc_score(y, probabilities)), "pr_auc": float(average_precision_score(y, probabilities)), "precision": float(precision_score(y, predicted, zero_division=0)), "recall": float(recall_score(y, predicted, zero_division=0)), "f1": float(f1_score(y, predicted, zero_division=0))}
+        return {
+            "threshold": threshold,
+            "accuracy": float(accuracy_score(y, predicted)),
+            "roc_auc": float(roc_auc_score(y, probabilities)),
+            "pr_auc": float(average_precision_score(y, probabilities)),
+            "precision": float(precision_score(y, predicted, zero_division=0)),
+            "recall": float(recall_score(y, predicted, zero_division=0)),
+            "f1": float(f1_score(y, predicted, zero_division=0)),
+        }
 
     def run_single(self, feature_name: str, model_name: str) -> dict[str, Any]:
         """Tune, evaluate, and persist one model-feature representation experiment."""
@@ -233,8 +244,12 @@ class ChurnExperimentPipeline:
             raise ValueError(f"Unsupported model: {model_name}")
         validation_probability = model.predict_proba(validation_model)[:, 1]
         test_probability = model.predict_proba(test_model)[:, 1]
-        thresholds = threshold_table(self.splits.y_validation, validation_probability, cost_fn=2.0, cost_fp=1.0)
-        threshold = select_cost_threshold(thresholds)
+        thresholds = threshold_table(self.splits.y_validation, validation_probability)
+        if self.threshold_strategy == "accuracy":
+            threshold = select_accuracy_threshold(thresholds)
+        else:
+            thresholds_cost = threshold_table(self.splits.y_validation, validation_probability, cost_fn=2.0, cost_fp=1.0)
+            threshold = select_cost_threshold(thresholds_cost)
         result = {
             "feature_set": feature_name,
             "model": model_name,
@@ -268,7 +283,10 @@ class ChurnExperimentPipeline:
             records.append(json.loads(metrics_file.read_text(encoding="utf-8")))
         if not records:
             raise RuntimeError("No completed experiment artifacts found")
-        results = pd.json_normalize(records, sep="_").sort_values(["validation_pr_auc", "validation_f1"], ascending=False)
+        results = pd.json_normalize(records, sep="_")
+        sort_cols = [c for c in ["validation_accuracy", "validation_pr_auc", "validation_f1"] if c in results.columns]
+        if sort_cols:
+            results = results.sort_values(sort_cols, ascending=False)
         self.output_root.joinpath("tables").mkdir(parents=True, exist_ok=True)
         results.to_csv(self.output_root / "tables" / "experiment_comparison.csv", index=False)
         best = results.iloc[0].to_dict()
